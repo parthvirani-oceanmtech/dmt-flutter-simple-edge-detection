@@ -8,13 +8,10 @@ import 'package:flutter/material.dart';
 import 'edge_detection_shape/edge_detection_shape.dart';
 
 class ImagePreview extends StatefulWidget {
-  ImagePreview({
-    this.imagePath,
-    this.edgeDetectionResult
-  });
+  ImagePreview({this.imagePath, this.edgeDetectionResult});
 
-  final String imagePath;
-  final EdgeDetectionResult edgeDetectionResult;
+  final String? imagePath;
+  final EdgeDetectionResult? edgeDetectionResult;
 
   @override
   _ImagePreviewState createState() => _ImagePreviewState();
@@ -29,34 +26,24 @@ class _ImagePreviewState extends State<ImagePreview> {
       child: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Center(
-            child: Text('Loading ...')
-          ),
-          Image.file(
-            File(widget.imagePath),
-            fit: BoxFit.contain,
-            key: imageWidgetKey
-          ),
+          Center(child: Text('Loading ...')),
+          Image.file(File(widget.imagePath!), fit: BoxFit.contain, key: imageWidgetKey),
           FutureBuilder<ui.Image>(
-            future: loadUiImage(widget.imagePath),
-            builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
-              return _getEdgePaint(snapshot, context);
-            }
-          ),
+              future: loadUiImage(widget.imagePath!),
+              builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
+                return _getEdgePaint(snapshot, context);
+              }),
         ],
       ),
     );
   }
 
   Widget _getEdgePaint(AsyncSnapshot<ui.Image> imageSnapshot, BuildContext context) {
-    if (imageSnapshot.connectionState == ConnectionState.waiting)
-      return Container();
+    if (imageSnapshot.connectionState == ConnectionState.waiting) return Container();
 
-    if (imageSnapshot.hasError)
-      return Text('Error: ${imageSnapshot.error}');
+    if (imageSnapshot.hasError) return Text('Error: ${imageSnapshot.error}');
 
-    if (widget.edgeDetectionResult == null)
-      return Container();
+    if (widget.edgeDetectionResult == null) return Container();
 
     final keyContext = imageWidgetKey.currentContext;
 
@@ -67,10 +54,7 @@ class _ImagePreviewState extends State<ImagePreview> {
     final box = keyContext.findRenderObject() as RenderBox;
 
     return EdgeDetectionShape(
-      originalImageSize: Size(
-        imageSnapshot.data.width.toDouble(),
-        imageSnapshot.data.height.toDouble()
-      ),
+      originalImageSize: Size(imageSnapshot.data!.width.toDouble(), imageSnapshot.data!.height.toDouble()),
       renderedImageSize: Size(box.size.width, box.size.height),
       edgeDetectionResult: widget.edgeDetectionResult,
     );

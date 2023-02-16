@@ -4,16 +4,16 @@ import 'package:flutter/material.dart';
 import 'magnifier_painter.dart';
 
 class Magnifier extends StatefulWidget {
-  const Magnifier({
-    @required this.child,
-    @required this.position,
-    this.visible = true,
-    this.scale = 1.5,
-    this.size = const Size(160, 160)
-  }) : assert(child != null);
+  const Magnifier(
+      {required this.child,
+      required this.position,
+      this.visible = true,
+      this.scale = 1.5,
+      this.size = const Size(160, 160)})
+      : assert(child != null);
 
   final Widget child;
-  final Offset position;
+  final Offset? position;
   final bool visible;
   final double scale;
   final Size size;
@@ -23,9 +23,9 @@ class Magnifier extends StatefulWidget {
 }
 
 class _MagnifierState extends State<Magnifier> {
-  Size _magnifierSize;
-  double _scale;
-  Matrix4 _matrix;
+  late Size _magnifierSize;
+  double? _scale;
+  late Matrix4 _matrix;
 
   @override
   void initState() {
@@ -46,11 +46,7 @@ class _MagnifierState extends State<Magnifier> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      children: [
-        widget.child,
-        if (widget.visible && widget.position != null)
-          _getMagnifier(context)
-      ],
+      children: [widget.child, if (widget.visible && widget.position != null) _getMagnifier(context)],
     );
   }
 
@@ -60,12 +56,12 @@ class _MagnifierState extends State<Magnifier> {
     }
 
     setState(() {
-      double newX =  widget.position.dx - (_magnifierSize.width / 2 / _scale);
-      double newY =  widget.position.dy - (_magnifierSize.height / 2 / _scale);
+      double newX = widget.position!.dx - (_magnifierSize.width / 2 / _scale!);
+      double newY = widget.position!.dy - (_magnifierSize.height / 2 / _scale!);
 
       if (_bubbleCrossesMagnifier()) {
         final box = context.findRenderObject() as RenderBox;
-        newX -= ((box.size.width - _magnifierSize.width) / _scale);
+        newX -= ((box.size.width - _magnifierSize.width) / _scale!);
       }
 
       final Matrix4 updatedMatrix = Matrix4.identity()
@@ -83,9 +79,7 @@ class _MagnifierState extends State<Magnifier> {
         child: BackdropFilter(
           filter: ImageFilter.matrix(_matrix.storage),
           child: CustomPaint(
-            painter: MagnifierPainter(
-              color: Theme.of(context).accentColor
-            ),
+            painter: MagnifierPainter(color: Theme.of(context).accentColor),
             size: _magnifierSize,
           ),
         ),
@@ -101,6 +95,5 @@ class _MagnifierState extends State<Magnifier> {
     return Alignment.topLeft;
   }
 
-  bool _bubbleCrossesMagnifier() => widget.position.dx < widget.size.width &&
-      widget.position.dy < widget.size.height;
+  bool _bubbleCrossesMagnifier() => widget.position!.dx < widget.size.width && widget.position!.dy < widget.size.height;
 }

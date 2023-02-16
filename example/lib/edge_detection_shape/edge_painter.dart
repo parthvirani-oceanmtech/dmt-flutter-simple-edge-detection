@@ -3,12 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 class EdgePainter extends CustomPainter {
-  EdgePainter({
-    @required this.points,
-    @required this.color
-  });
+  EdgePainter({required this.points, required this.color});
 
-  final List<Offset> points;
+  final List<Offset>? points;
   final Color color;
 
   @override
@@ -18,7 +15,7 @@ class EdgePainter extends CustomPainter {
       ..strokeWidth = 2
       ..strokeCap = StrokeCap.round;
 
-    canvas.drawPoints(PointMode.polygon, points, paint);
+    canvas.drawPoints(PointMode.polygon, points!, paint);
   }
 
   @override

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MagnifierPainter extends CustomPainter {
-  const MagnifierPainter({
-    @required this.color,
-    this.strokeWidth = 5
-  });
+  const MagnifierPainter({required this.color, this.strokeWidth = 5});
 
   final double strokeWidth;
   final Color color;
@@ -21,12 +18,7 @@ class MagnifierPainter extends CustomPainter {
       ..strokeWidth = strokeWidth
       ..color = color;
 
-    canvas.drawCircle(
-      size.center(
-        Offset(0, 0)
-      ),
-      size.longestSide / 2, paintObject
-    );
+    canvas.drawCircle(size.center(Offset(0, 0)), size.longestSide / 2, paintObject);
   }
 
   void _drawCrosshair(Canvas canvas, Size size) {
@@ -36,17 +28,9 @@ class MagnifierPainter extends CustomPainter {
 
     double crossSize = size.longestSide * 0.04;
 
-    canvas.drawLine(
-      size.center(Offset(-crossSize, -crossSize)),
-      size.center(Offset(crossSize, crossSize)),
-      crossPaint
-    );
+    canvas.drawLine(size.center(Offset(-crossSize, -crossSize)), size.center(Offset(crossSize, crossSize)), crossPaint);
 
-    canvas.drawLine(
-      size.center(Offset(crossSize, -crossSize)),
-      size.center(Offset(-crossSize, crossSize)),
-      crossPaint
-    );
+    canvas.drawLine(size.center(Offset(crossSize, -crossSize)), size.center(Offset(-crossSize, crossSize)), crossPaint);
   }
 
   @override

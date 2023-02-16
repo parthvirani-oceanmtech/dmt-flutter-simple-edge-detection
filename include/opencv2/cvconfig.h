@@ -28,9 +28,6 @@
 /* Clp support */
 /* #undef HAVE_CLP */
 
-/* Cocoa API */
-/* #undef HAVE_COCOA */
-
 /* NVIDIA CUDA Runtime API*/
 /* #undef HAVE_CUDA */
 
@@ -56,12 +53,6 @@
 /* Geospatial Data Abstraction Library */
 /* #undef HAVE_GDAL */
 
-/* GTK+ 2.0 Thread support */
-/* #undef HAVE_GTHREAD */
-
-/* GTK+ 2.x toolkit */
-/* #undef HAVE_GTK */
-
 /* Halide support */
 /* #undef HAVE_HALIDE */
 
@@ -72,14 +63,14 @@
 #define HAVE_INTTYPES_H 1
 
 /* Intel Integrated Performance Primitives */
-#define HAVE_IPP
-#define HAVE_IPP_ICV
-#define HAVE_IPP_IW
-#define HAVE_IPP_IW_LL
+/* #undef HAVE_IPP */
+/* #undef HAVE_IPP_ICV */
+/* #undef HAVE_IPP_IW */
+/* #undef HAVE_IPP_IW_LL */
 
 /* JPEG-2000 codec */
-/* #undef HAVE_OPENJPEG */
-#define HAVE_JASPER
+#define HAVE_OPENJPEG
+/* #undef HAVE_JASPER */
 
 /* IJG JPEG codec */
 #define HAVE_JPEG
@@ -115,17 +106,14 @@
 /* PNG codec */
 #define HAVE_PNG
 
+/* PNG codec */
+/* #undef HAVE_SPNG */
+
 /* Posix threads (pthreads) */
 #define HAVE_PTHREAD
 
 /* parallel_for with pthreads */
 #define HAVE_PTHREADS_PF
-
-/* Qt support */
-/* #undef HAVE_QT */
-
-/* Qt OpenGL support */
-/* #undef HAVE_QT_OPENGL */
 
 /* Intel Threading Building Blocks */
 #define HAVE_TBB
@@ -135,9 +123,6 @@
 
 /* TIFF codec */
 #define HAVE_TIFF
-
-/* Win32 UI */
-/* #undef HAVE_WIN32UI */
 
 /* Define if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
