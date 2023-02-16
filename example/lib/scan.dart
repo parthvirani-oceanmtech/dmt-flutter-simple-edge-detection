@@ -3,10 +3,10 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:simple_edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:simple_edge_detection/edge_detection.dart' as sed;
 import 'package:simple_edge_detection_example/cropping_preview.dart';
 
 import 'camera_view.dart';
@@ -156,10 +156,20 @@ class _ScanState extends State<Scan> {
       imagePath = filePath;
     });
 
-    EdgeDetectionResult result = await EdgeDetector().detectEdges(filePath);
+    sed.EdgeDetectionResult result = await sed.EdgeDetector().detectEdges(filePath);
+
+    print(result.topLeft);
+    print(result.topRight);
+    print(result.bottomLeft);
+    print(result.bottomRight);
 
     setState(() {
-      edgeDetectionResult = result;
+      edgeDetectionResult = EdgeDetectionResult(
+        topLeft: Offset(0, 0),
+        topRight: Offset(0.5, 0),
+        bottomLeft: Offset(0, 0.5),
+        bottomRight: Offset(0.5, 0.5),
+      );
     });
   }
 
@@ -169,11 +179,11 @@ class _ScanState extends State<Scan> {
     }
 
     double rotation = 0;
-    bool result = await EdgeDetector().processImage(filePath, edgeDetectionResult!, rotation);
+    // bool result = await EdgeDetector().processImage(filePath, edgeDetectionResult!, rotation);
 
-    if (result == false) {
-      return;
-    }
+    // if (result == false) {
+    //   return;
+    // }
 
     setState(() {
       imageCache.clearLiveImages();
@@ -183,7 +193,7 @@ class _ScanState extends State<Scan> {
   }
 
   void onTakePictureButtonPressed() async {
-    String? filePath = await takePicture();
+    String? filePath = (await ImagePicker().pickImage(source: ImageSource.camera))?.path;
 
     log('Picture saved to $filePath');
 
@@ -191,9 +201,7 @@ class _ScanState extends State<Scan> {
   }
 
   void _onGalleryButtonPressed() async {
-    ImagePicker picker = ImagePicker();
-    PickedFile pickedFile = (await picker.getImage(source: ImageSource.gallery))!;
-    final filePath = pickedFile.path;
+    final filePath = (await ImagePicker().pickImage(source: ImageSource.gallery))?.path;
 
     log('Picture saved to $filePath');
 
@@ -204,4 +212,18 @@ class _ScanState extends State<Scan> {
     return Padding(
         padding: EdgeInsets.only(bottom: 32), child: Align(alignment: Alignment.bottomCenter, child: _getButtonRow()));
   }
+}
+
+class EdgeDetectionResult {
+  EdgeDetectionResult({
+    required this.topLeft,
+    required this.topRight,
+    required this.bottomLeft,
+    required this.bottomRight,
+  });
+
+  Offset topLeft;
+  Offset topRight;
+  Offset bottomLeft;
+  Offset bottomRight;
 }

@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:simple_edge_detection/edge_detection.dart';
+import 'package:simple_edge_detection_example/scan.dart';
 
 import 'edge_painter.dart';
 import 'magnifier.dart' as mag;
@@ -145,7 +145,8 @@ class _EdgeDetectionShapeState extends State<EdgeDetectionShape> {
                     setState(() {
                       Offset newBottomRight =
                           _getNewPositionAfterDrag(position, renderedImageWidth, renderedImageHeight);
-                      edgeDetectionResult!.bottomRight = _clampOffset(edgeDetectionResult!.bottomRight + newBottomRight);
+                      edgeDetectionResult!.bottomRight =
+                          _clampOffset(edgeDetectionResult!.bottomRight + newBottomRight);
                       currentDragPosition = Offset(points![2].dx, points![2].dy);
                     });
                   },

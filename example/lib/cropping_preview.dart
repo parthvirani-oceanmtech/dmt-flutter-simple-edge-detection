@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-import 'package:simple_edge_detection/edge_detection.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_edge_detection_example/scan.dart';
 
 import 'edge_detection_shape/edge_detection_shape.dart';
 
