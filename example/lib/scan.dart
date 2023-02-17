@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
@@ -11,6 +13,7 @@ import 'package:simple_edge_detection_example/cropping_preview.dart';
 
 import 'camera_view.dart';
 import 'image_view.dart';
+import 'main.dart';
 
 class Scan extends StatefulWidget {
   @override
@@ -23,6 +26,7 @@ class _ScanState extends State<Scan> {
   String? imagePath;
   String? croppedImagePath;
   EdgeDetectionResult? edgeDetectionResult;
+  Image? image;
 
   @override
   void initState() {
@@ -45,6 +49,10 @@ class _ScanState extends State<Scan> {
   }
 
   Widget _getMainWidget() {
+    if (image != null) {
+      return image!;
+    }
+
     if (croppedImagePath != null) {
       return ImageView(imagePath: croppedImagePath);
     }
@@ -97,6 +105,7 @@ class _ScanState extends State<Scan> {
             }
 
             setState(() {
+              image = null;
               imagePath = null;
               edgeDetectionResult = null;
               croppedImagePath = null;
@@ -165,13 +174,26 @@ class _ScanState extends State<Scan> {
 
     setState(() {
       edgeDetectionResult = EdgeDetectionResult(
-        topLeft: Offset(0, 0),
-        topRight: Offset(0.5, 0),
-        bottomLeft: Offset(0, 0.5),
-        bottomRight: Offset(0.5, 0.5),
+        topLeft: Offset(0.2, 0.3),
+        topRight: Offset(0.8, 0.3),
+        bottomLeft: Offset(0.2, 0.8),
+        bottomRight: Offset(0.8, 0.8),
       );
     });
   }
+
+  // late ui.Image _bitmap;
+  // late Size _bitmapSize;
+
+  // Future<ui.Image> croppedBitmap({ui.FilterQuality quality = FilterQuality.high}) async {
+  //   final pictureRecorder = ui.PictureRecorder();
+  //   Canvas(pictureRecorder).drawImage(
+  //     _bitmap,
+  //     ui.Offset(1, 1),
+  //     Paint()..filterQuality = quality,
+  //   );
+  //   return await pictureRecorder.endRecording().toImage(cropSize.width.round(), cropSize.height.round());
+  // }
 
   Future<void> _processImage(String? filePath, EdgeDetectionResult? edgeDetectionResult) async {
     if (!mounted || filePath == null) {
@@ -179,7 +201,15 @@ class _ScanState extends State<Scan> {
     }
 
     double rotation = 0;
-    // bool result = await EdgeDetector().processImage(filePath, edgeDetectionResult!, rotation);
+
+    image = await cropController.croppedImage();
+
+    //  image = await Image(
+    //    image: UiImageProvider(await croppedBitmap(quality: FilterQuality.medium)),
+    //    fit: BoxFit.contain,
+    //  );
+
+  //  bool result = await sed.EdgeDetector().processImage(filePath, edgeDetectionResult!, rotation);
 
     // if (result == false) {
     //   return;
@@ -210,7 +240,12 @@ class _ScanState extends State<Scan> {
 
   Padding _getBottomBar() {
     return Padding(
-        padding: EdgeInsets.only(bottom: 32), child: Align(alignment: Alignment.bottomCenter, child: _getButtonRow()));
+      padding: EdgeInsets.only(bottom: 32),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: _getButtonRow(),
+      ),
+    );
   }
 }
 
@@ -226,4 +261,33 @@ class EdgeDetectionResult {
   Offset topRight;
   Offset bottomLeft;
   Offset bottomRight;
+}
+
+class UiImageProvider extends ImageProvider<UiImageProvider> {
+  /// The [ui.Image] from which the image will be fetched.
+  final ui.Image image;
+
+  const UiImageProvider(this.image);
+
+  @override
+  Future<UiImageProvider> obtainKey(ImageConfiguration configuration) => SynchronousFuture<UiImageProvider>(this);
+
+  @override
+  ImageStreamCompleter load(UiImageProvider key, DecoderCallback decode) =>
+      OneFrameImageStreamCompleter(_loadAsync(key));
+
+  Future<ImageInfo> _loadAsync(UiImageProvider key) async {
+    assert(key == this);
+    return ImageInfo(image: image);
+  }
+
+  @override
+  bool operator ==(dynamic other) {
+    if (other.runtimeType != runtimeType) return false;
+    final UiImageProvider typedOther = other;
+    return image == typedOther.image;
+  }
+
+  @override
+  int get hashCode => image.hashCode;
 }
