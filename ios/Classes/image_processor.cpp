@@ -22,13 +22,18 @@ Mat rotate(Mat src,double angle){
     cv::warpAffine(src, dst, rot, bbox.size());
     return dst;
 }
-Mat ImageProcessor::process_image(Mat img, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,double rotation) {
-    cvtColor(img, img, COLOR_BGR2GRAY);
-    Mat dst = ImageProcessor::crop_and_transform(img, x1, y1, x2, y2, x3, y3, x4, y4);
-    Mat Another= rotate(dst,rotation);
-    adaptiveThreshold(Another, Another, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, 53, 10);
+// Mat ImageProcessor::process_image(Mat img, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,double rotation) {
+//     cvtColor(img, img, COLOR_BGR2GRAY);
+//     Mat dst = ImageProcessor::crop_and_transform(img, x1, y1, x2, y2, x3, y3, x4, y4);
+//     Mat Another= rotate(dst,rotation);
+//     adaptiveThreshold(Another, Another, 255, cv::ADAPTIVE_THRESH_MEAN_C, cv::THRESH_BINARY, 53, 10);
 
-    return Another;
+//     return Another;
+// }
+
+Mat ImageProcessor::process_image(Mat img, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4,double rotation) {
+Mat dst = ImageProcessor::crop_and_transform(img, x1, y1, x2, y2, x3, y3, x4, y4);
+return dst;
 }
 
 Mat ImageProcessor::crop_and_transform(Mat img, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {

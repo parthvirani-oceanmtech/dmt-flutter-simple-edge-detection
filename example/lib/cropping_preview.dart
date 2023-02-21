@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:simple_edge_detection/edge_detection.dart';
 import 'package:simple_edge_detection_example/image_cropper/src/crop_controller.dart';
 import 'package:simple_edge_detection_example/image_cropper/src/crop_image.dart';
 import 'package:simple_edge_detection_example/scan.dart';
@@ -27,7 +28,7 @@ class _ImagePreviewState extends State<ImagePreview> {
   void initState() {
     super.initState();
     cropController = CropController(
-      defaultCrop: Rect.fromLTRB(0.05, 0.05, 0.95, 0.95),
+      defaultCrop: Rect.fromLTRB(0.2, 0.10, 0.5, 0.95),
     );
   }
 
@@ -39,7 +40,6 @@ class _ImagePreviewState extends State<ImagePreview> {
         children: <Widget>[
           Center(child: Text('Loading ...')),
           // CropImage(
-          //   alwaysShowThirdLines: true,
           //   controller: cropController,
           //   image: Image.file(File(widget.imagePath!), fit: BoxFit.contain, key: imageWidgetKey),
           // ),

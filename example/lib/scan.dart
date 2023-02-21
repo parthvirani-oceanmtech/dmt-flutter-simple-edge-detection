@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:simple_edge_detection/edge_detection.dart' as sed;
+import 'package:simple_edge_detection/edge_detection.dart';
 import 'package:simple_edge_detection_example/cropping_preview.dart';
+import 'package:image/image.dart' as IMG;
 
 import 'camera_view.dart';
 import 'image_view.dart';
@@ -49,9 +51,9 @@ class _ScanState extends State<Scan> {
   }
 
   Widget _getMainWidget() {
-    if (image != null) {
-      return image!;
-    }
+    // if (image != null) {
+    //   return image!;
+    // }
 
     if (croppedImagePath != null) {
       return ImageView(imagePath: croppedImagePath);
@@ -167,10 +169,10 @@ class _ScanState extends State<Scan> {
 
     sed.EdgeDetectionResult result = await sed.EdgeDetector().detectEdges(filePath);
 
-    print(result.topLeft);
-    print(result.topRight);
-    print(result.bottomLeft);
-    print(result.bottomRight);
+    // print(result.topLeft);
+    // print(result.topRight);
+    // print(result.bottomLeft);
+    // print(result.bottomRight);
 
     setState(() {
       edgeDetectionResult = EdgeDetectionResult(
@@ -182,38 +184,72 @@ class _ScanState extends State<Scan> {
     });
   }
 
-  // late ui.Image _bitmap;
-  // late Size _bitmapSize;
+  late ui.Image _bitmap;
+  late Size _bitmapSize;
 
-  // Future<ui.Image> croppedBitmap({ui.FilterQuality quality = FilterQuality.high}) async {
-  //   final pictureRecorder = ui.PictureRecorder();
-  //   Canvas(pictureRecorder).drawImage(
-  //     _bitmap,
-  //     ui.Offset(1, 1),
-  //     Paint()..filterQuality = quality,
-  //   );
-  //   return await pictureRecorder.endRecording().toImage(cropSize.width.round(), cropSize.height.round());
-  // }
+  Future<ui.Image> croppedBitmap({ui.FilterQuality quality = FilterQuality.high}) async {
+    final pictureRecorder = ui.PictureRecorder();
+    Canvas(pictureRecorder).drawImage(
+      _bitmap,
+      ui.Offset(1, 1),
+      Paint()..filterQuality = quality,
+    );
+    return await pictureRecorder.endRecording().toImage(200, 300);
+  }
 
-  Future<void> _processImage(String? filePath, EdgeDetectionResult? edgeDetectionResult) async {
+  Future<void> _processImage(String? filePath, sed.EdgeDetectionResult? edgeDetectionResult) async {
     if (!mounted || filePath == null) {
       return;
     }
 
     double rotation = 0;
 
-    image = await cropController.croppedImage();
+    // Uint8List fileData = await File(filePath).readAsBytes();
 
-    //  image = await Image(
-    //    image: UiImageProvider(await croppedBitmap(quality: FilterQuality.medium)),
-    //    fit: BoxFit.contain,
-    //  );
+    // IMG.Image? img = IMG.decodeImage(fileData);
+    // IMG.Image? newImg;
 
-  //  bool result = await sed.EdgeDetector().processImage(filePath, edgeDetectionResult!, rotation);
+    // IMG.Image resized = IMG.copyRectify(
+    //   img!,
+    //   topLeft: IMG.Point(0, 0),
+    //   topRight: IMG.Point(100, 0),
+    //   bottomLeft: IMG.Point(0, 100),
+    //   bottomRight: IMG.Point(100, 100),
+    // topLeft: IMG.Point(edgeDetectionResult!.topLeft.dx * 100, edgeDetectionResult.topLeft.dy * 100),
+    // topRight: IMG.Point(edgeDetectionResult.topRight.dx * 100, edgeDetectionResult.topRight.dy * 100),
+    // bottomLeft: IMG.Point(edgeDetectionResult.bottomLeft.dx * 100, edgeDetectionResult.bottomLeft.dy * 100),
+    // bottomRight: IMG.Point(edgeDetectionResult.bottomRight.dx * 100, edgeDetectionResult.bottomRight.dy * 100),
+    // toImage: newImg,
+    // );
+    // Uint8List resizedImg = Uint8List.fromList(IMG.encodePng(resized));
+    // final directory = (await getApplicationDocumentsDirectory()).path;
+    // String newFilePath = directory + Platform.pathSeparator + "temp.png";
+    // print(newFilePath);
+    // final finalImg = await File(newFilePath.toString()).create(recursive: true);
+    // await finalImg.writeAsBytes(resizedImg);
 
-    // if (result == false) {
-    //   return;
-    // }
+    // image = await cropController.croppedImage();
+
+    // image = await Image(
+    // image: UiImageProvider(await croppedBitmap(quality: FilterQuality.medium)),
+    // fit: BoxFit.contain,
+    // );
+
+    bool result = await sed.EdgeDetector().processImage(filePath, edgeDetectionResult!, rotation);
+
+    if (result == false) {
+      return;
+    }
+
+    print(edgeDetectionResult.topLeft);
+    print(edgeDetectionResult.topRight);
+    print(edgeDetectionResult.bottomLeft);
+    print(edgeDetectionResult.bottomRight);
+
+    // Offset(0.2, 0.3)
+    // Offset(0.8, 0.3)
+    // Offset(0.0, 0.8)
+    // Offset(0.6, 0.9)
 
     setState(() {
       imageCache.clearLiveImages();
@@ -249,45 +285,45 @@ class _ScanState extends State<Scan> {
   }
 }
 
-class EdgeDetectionResult {
-  EdgeDetectionResult({
-    required this.topLeft,
-    required this.topRight,
-    required this.bottomLeft,
-    required this.bottomRight,
-  });
+// class EdgeDetectionResult {
+//   EdgeDetectionResult({
+//     required this.topLeft,
+//     required this.topRight,
+//     required this.bottomLeft,
+//     required this.bottomRight,
+//   });
 
-  Offset topLeft;
-  Offset topRight;
-  Offset bottomLeft;
-  Offset bottomRight;
-}
+//   Offset topLeft;
+//   Offset topRight;
+//   Offset bottomLeft;
+//   Offset bottomRight;
+// }
 
-class UiImageProvider extends ImageProvider<UiImageProvider> {
-  /// The [ui.Image] from which the image will be fetched.
-  final ui.Image image;
+// class UiImageProvider extends ImageProvider<UiImageProvider> {
+//   /// The [ui.Image] from which the image will be fetched.
+//   final ui.Image image;
 
-  const UiImageProvider(this.image);
+//   const UiImageProvider(this.image);
 
-  @override
-  Future<UiImageProvider> obtainKey(ImageConfiguration configuration) => SynchronousFuture<UiImageProvider>(this);
+//   @override
+//   Future<UiImageProvider> obtainKey(ImageConfiguration configuration) => SynchronousFuture<UiImageProvider>(this);
 
-  @override
-  ImageStreamCompleter load(UiImageProvider key, DecoderCallback decode) =>
-      OneFrameImageStreamCompleter(_loadAsync(key));
+//   @override
+//   ImageStreamCompleter load(UiImageProvider key, DecoderCallback decode) =>
+//       OneFrameImageStreamCompleter(_loadAsync(key));
 
-  Future<ImageInfo> _loadAsync(UiImageProvider key) async {
-    assert(key == this);
-    return ImageInfo(image: image);
-  }
+//   Future<ImageInfo> _loadAsync(UiImageProvider key) async {
+//     assert(key == this);
+//     return ImageInfo(image: image);
+//   }
 
-  @override
-  bool operator ==(dynamic other) {
-    if (other.runtimeType != runtimeType) return false;
-    final UiImageProvider typedOther = other;
-    return image == typedOther.image;
-  }
+//   @override
+//   bool operator ==(dynamic other) {
+//     if (other.runtimeType != runtimeType) return false;
+//     final UiImageProvider typedOther = other;
+//     return image == typedOther.image;
+//   }
 
-  @override
-  int get hashCode => image.hashCode;
-}
+//   @override
+//   int get hashCode => image.hashCode;
+// }

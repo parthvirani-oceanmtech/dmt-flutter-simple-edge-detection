@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:simple_edge_detection/edge_detection.dart';
 import 'package:simple_edge_detection_example/scan.dart';
 
 import 'edge_painter.dart';
